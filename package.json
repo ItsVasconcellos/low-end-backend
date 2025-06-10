@@ -1,0 +1,33 @@
+{
+  "name": "low-end-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json",
+    "dev": "nodemon",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ItsVasconcellos/low-end-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ItsVasconcellos/low-end-backend/issues"
+  },
+  "homepage": "https://github.com/ItsVasconcellos/low-end-backend#readme",
+  "dependencies": {
+    "@fastify/postgres": "^6.0.2",
+    "fastify": "^5.3.3",
+    "nodemon": "^3.1.10",
+    "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.3"
+  }
+}
