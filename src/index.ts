@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import env from './plugins/env';
 import postgres from './plugins/db';
 import { runMigrations } from './utils/migration'; // Exemplo de onde colocar
+import transacaoRoutes from './routes/transacao';
 
 
 const app = Fastify({
@@ -9,14 +10,16 @@ const app = Fastify({
 });
 
 
+// Importando plugins
 app.register(env);
 app.register(postgres);
 
-app.get('/', async () => {
-    const client = await app.pg.connect();
-    const { rows } = await client.query('SELECT * FROM Client LIMIT 1');
-    client.release();
-    return { message: 'Hello World!', dbTime: rows[0] };
+// Importando rotas
+// app.register(extratoRoutes, { prefix: '/clientes' });
+app.register(transacaoRoutes, { prefix: '/clientes' });
+
+app.get('/', async (request, reply) => {
+    return { hello: 'Low End Backend' };
 });
 
 const start = async () => {
