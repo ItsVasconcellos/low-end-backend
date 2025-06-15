@@ -1,15 +1,21 @@
-import fastify from 'fastify'
+import Fastify, { fastify } from 'fastify'
 
-const server = fastify()
+const app = Fastify({
+    logger: true,
+});
 
-server.get('/ping', async (request, reply) => {
-    return 'pong\n'
-})
+app.get('/', async function () {
+    return { hello: 'world' };
+});
 
-server.listen({ port: 8080 }, (err, address) => {
-    if (err) {
-        console.error(err)
-        process.exit(1)
-    }
-    console.log(`Server listening at ${address}`)
-})
+app.register(import('./api/routes/extrato'), {
+    prefix: '/extrato',
+});
+async function main() {
+    await app.listen({
+        port: 3000,
+        host: "0.0.0.0",
+    });
+}
+
+main();
