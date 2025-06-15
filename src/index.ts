@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import env from './plugins/env';
 import postgres from './plugins/db';
-import { runMigrations } from './api/utils/migration'; // Exemplo de onde colocar
+import { runMigrations } from './utils/migration'; // Exemplo de onde colocar
 
 
 const app = Fastify({
