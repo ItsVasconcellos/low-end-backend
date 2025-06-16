@@ -25,7 +25,7 @@ app.get('/', async (request, reply) => {
 const start = async () => {
     try {
         await app.listen({
-            port: 8080,
+            port: Number(app.config?.PORT || process.env.PORT || 3000),
             host: '0.0.0.0'
         });
         await runMigrations(app);
