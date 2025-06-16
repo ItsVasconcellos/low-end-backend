@@ -9,11 +9,15 @@ export async function handleTransaction(
 ): Promise<TransactionResponse> {
     const { valor, tipo, descricao } = body;
     const client = await fastify.pg.connect();
-
+    const row = await client.query(
+        'SELECT now() as current_time',
+        []
+    );
+    console.log('Current time:', row.rows[0].current_time);
     try {
         // Fetch current saldo and limite
         const { rows } = await client.query(
-            'SELECT saldo, limite FROM clientes WHERE id = $1',
+            'SELECT saldo, limite FROM Client WHERE id = $1',
             [id]
         );
         if (rows.length === 0) {
@@ -33,13 +37,13 @@ export async function handleTransaction(
 
         // Update saldo in DB
         await client.query(
-            'UPDATE clientes SET saldo = $1 WHERE id = $2',
+            'UPDATE Client SET saldo = $1 WHERE id = $2',
             [saldo, id]
         );
 
         // Insert transaction record (optional, if you have a table for it)
         await client.query(
-            'INSERT INTO transacoes (cliente_id, valor, tipo, descricao, realizada_em) VALUES ($1, $2, $3, $4, NOW())',
+            'INSERT INTO Transaction (clientId, valor, tipo, descricao, date) VALUES ($1, $2, $3, $4, NOW())',
             [id, valor, tipo, descricao]
         );
 

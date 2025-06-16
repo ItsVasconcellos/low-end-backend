@@ -3,6 +3,7 @@ import env from './plugins/env';
 import postgres from './plugins/db';
 import { runMigrations } from './utils/migration'; // Exemplo de onde colocar
 import transacaoRoutes from './routes/transacao';
+import { handleTransaction } from './controllers/transacao';
 
 
 const app = Fastify({
@@ -13,7 +14,6 @@ const app = Fastify({
 // Importando plugins
 app.register(env);
 app.register(postgres);
-
 // Importando rotas
 // app.register(extratoRoutes, { prefix: '/clientes' });
 app.register(transacaoRoutes, { prefix: '/clientes' });

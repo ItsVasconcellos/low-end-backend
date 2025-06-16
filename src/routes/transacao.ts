@@ -1,6 +1,9 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { transactionSchema, paramsSchema } from '../interfaces/validators/transacao';
+import { handleTransaction } from '../controllers/transacao';
+
 async function routes(fastify: FastifyInstance): Promise<void> {
+    // Attach handleTransaction to fastify instance if not already present
     fastify.post<{ Body: TransactionRequestBody }>('/:id/transacoes',
         {
             schema: {
@@ -10,13 +13,13 @@ async function routes(fastify: FastifyInstance): Promise<void> {
         },
         async (request, response): Promise<TransactionResponse> => {
             const { id } = request.params as { id: number };
-            const { valor, tipo, descricao } = request.body;
-
-            const client = await fastify.pg.connect();
+            // Call handleTransaction and return its result
+            const result = await handleTransaction(fastify, id, request.body);
 
             response.status(200);
-            return { limite: 0, saldo: 0 };
+            return result;
         });
 }
+
 
 export default routes;
