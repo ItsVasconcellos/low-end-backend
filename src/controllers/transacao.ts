@@ -1,12 +1,13 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyReply } from 'fastify';
 
 // filepath: /home/fvasconcellos/dev/mod/mod10/personal/low-end-backend/src/controllers/transacao.ts
 
 export async function handleTransaction(
     fastify: FastifyInstance,
+    reply: FastifyReply,
     id: number,
     body: TransactionRequestBody
-): Promise<TransactionResponse> {
+): Promise<TransactionResponse | void> {
     const { valor, tipo, descricao } = body;
     const client = await fastify.pg.connect();
     const row = await client.query(
@@ -21,7 +22,8 @@ export async function handleTransaction(
             [id]
         );
         if (rows.length === 0) {
-            throw new Error('Cliente não encontrado');
+            reply.code(404).send({ error: 'Cliente não encontrado' });
+            return;
         }
         let { saldo, limite } = rows[0];
 
@@ -30,7 +32,8 @@ export async function handleTransaction(
             saldo += valor;
         } else if (tipo === 'd') {
             if (saldo - valor < -limite) {
-                throw new Error('Saldo insuficiente');
+                reply.code(422).send({ error: 'Saldo insuficiente' });
+                return;
             }
             saldo -= valor;
         }

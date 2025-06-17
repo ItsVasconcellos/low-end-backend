@@ -22,6 +22,6 @@ export const paramsSchema = {
     type: 'object',
     required: ['id'],
     properties: {
-        id: { type: 'number' },
+        id: { type: 'integer' },
     },
 } as const;

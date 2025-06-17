@@ -1,25 +1,30 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { transactionSchema, paramsSchema } from '../interfaces/validators/transacao';
 import { handleTransaction } from '../controllers/transacao';
 
 async function routes(fastify: FastifyInstance): Promise<void> {
-    // Attach handleTransaction to fastify instance if not already present
-    fastify.post<{ Body: TransactionRequestBody }>('/:id/transacoes',
+    fastify.post<{
+        Body: TransactionRequestBody;
+        Params: { id: number };
+        Reply: TransactionResponse
+    }>('/:id/transacoes',
         {
             schema: {
                 body: transactionSchema,
                 params: paramsSchema,
             },
         },
-        async (request, response): Promise<TransactionResponse> => {
-            const { id } = request.params as { id: number };
-            // Call handleTransaction and return its result
-            const result = await handleTransaction(fastify, id, request.body);
-
-            response.status(200);
-            return result;
-        });
+        async (request: FastifyRequest<{ Body: TransactionRequestBody; Params: { id: number } }>, reply: FastifyReply) => {
+            const { id } = request.params;
+            try {
+                const result = await handleTransaction(fastify, reply, id, request.body);
+                return reply.status(200).send(result);
+            } catch (error) {
+                console.log('Transaction error:', error);
+                return reply.status(422).send({ error: 'Unprocessable Entity' });
+            }
+        }
+    );
 }
-
 
 export default routes;
